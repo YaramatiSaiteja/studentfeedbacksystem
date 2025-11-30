@@ -1,23 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUpload, FaTrash, FaCheckCircle, FaClock } from "react-icons/fa";
+import { addNotification } from "../utils/notify";   // ✅ IMPORT NOTIFICATIONS
 
 export default function UploadAssignment() {
-  const [assignments, setAssignments] = useState([]);
+  const navigate = useNavigate();
+
+  // Load assignments from localStorage
+  const loadAssignments = () =>
+    JSON.parse(localStorage.getItem("assignments")) || [];
+
+  const [assignments, setAssignments] = useState(loadAssignments);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
   const [file, setFile] = useState(null);
   const [success, setSuccess] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const navigate = useNavigate();
+
+  // Sync to localStorage whenever assignments change
+  useEffect(() => {
+    localStorage.setItem("assignments", JSON.stringify(assignments));
+  }, [assignments]);
 
   // Handle file upload
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
 
-  // Add a new assignment
+  // UPLOAD ASSIGNMENT
   const handleUpload = () => {
     if (!title.trim() || !description.trim() || !deadline || !file) {
       alert("Please fill all fields and select a file!");
@@ -26,7 +37,6 @@ export default function UploadAssignment() {
 
     setUploading(true);
 
-    // Simulate upload delay
     setTimeout(() => {
       const newAssignment = {
         id: Date.now(),
@@ -38,26 +48,40 @@ export default function UploadAssignment() {
         status: "Uploaded",
       };
 
-      setAssignments([newAssignment, ...assignments]);
-      
+      const updated = [newAssignment, ...assignments];
+      setAssignments(updated);
+
+      // -----------------------------------------------------------------------
+      // 🔔 SEND NOTIFICATION TO ALL STUDENTS
+      // -----------------------------------------------------------------------
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      const students = users.filter((u) => u.role === "student");
+
+      students.forEach((s) => {
+        addNotification(
+          s.email,
+          `📘 New assignment uploaded: "${title}"`
+        );
+      });
+      // -----------------------------------------------------------------------
+
       // Reset form
       setTitle("");
       setDescription("");
       setDeadline("");
       setFile(null);
       document.getElementById("fileInput").value = "";
-      
+
       setUploading(false);
       setSuccess(true);
-      
       setTimeout(() => setSuccess(false), 3000);
     }, 1500);
   };
 
-  // Delete an assignment
+  // Delete assignment
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this assignment?")) {
-      const updated = assignments.filter((assignment) => assignment.id !== id);
+      const updated = assignments.filter((a) => a.id !== id);
       setAssignments(updated);
     }
   };
@@ -85,17 +109,14 @@ export default function UploadAssignment() {
         {/* Upload Card */}
         <div
           className="card shadow-lg border-0 mb-4"
-          style={{
-            borderRadius: "15px",
-            backgroundColor: "white",
-          }}
+          style={{ borderRadius: "15px", backgroundColor: "white" }}
         >
           <div className="card-body p-4 p-md-5">
             <h4 className="text-success fw-bold mb-4">
               <FaUpload className="me-2" /> Create New Assignment
             </h4>
 
-            {/* Success Message */}
+            {/* Success message */}
             {success && (
               <div
                 className="alert alert-success d-flex align-items-center mb-4"
@@ -108,54 +129,49 @@ export default function UploadAssignment() {
               </div>
             )}
 
-            {/* Assignment Title */}
+            {/* Title */}
             <div className="mb-3">
-              <label className="form-label fw-semibold" style={{ fontSize: "1rem" }}>
-                Assignment Title
-              </label>
+              <label className="form-label fw-semibold">Assignment Title</label>
               <input
                 type="text"
                 className="form-control"
                 placeholder="e.g., Math Homework - Chapter 5"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                style={{ padding: "12px", fontSize: "1rem", borderRadius: "8px" }}
+                style={{ padding: "12px", borderRadius: "8px" }}
               />
             </div>
 
             {/* Description */}
             <div className="mb-3">
-              <label className="form-label fw-semibold" style={{ fontSize: "1rem" }}>
-                Description
-              </label>
+              <label className="form-label fw-semibold">Description</label>
               <textarea
                 className="form-control"
                 rows="3"
-                placeholder="Provide assignment details and instructions..."
+                placeholder="Provide assignment details..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                style={{ padding: "12px", fontSize: "1rem", borderRadius: "8px" }}
+                style={{ padding: "12px", borderRadius: "8px" }}
               />
             </div>
 
             {/* Deadline */}
             <div className="mb-3">
-              <label className="form-label fw-semibold" style={{ fontSize: "1rem" }}>
-                <FaClock className="me-2" />
-                Deadline
+              <label className="form-label fw-semibold">
+                <FaClock className="me-2" /> Deadline
               </label>
               <input
                 type="datetime-local"
                 className="form-control"
                 value={deadline}
                 onChange={(e) => setDeadline(e.target.value)}
-                style={{ padding: "12px", fontSize: "1rem", borderRadius: "8px" }}
+                style={{ padding: "12px", borderRadius: "8px" }}
               />
             </div>
 
             {/* File Upload */}
             <div className="mb-4">
-              <label className="form-label fw-semibold" style={{ fontSize: "1rem" }}>
+              <label className="form-label fw-semibold">
                 Upload File (PDF, DOCX, etc.)
               </label>
               <input
@@ -163,7 +179,7 @@ export default function UploadAssignment() {
                 type="file"
                 className="form-control"
                 onChange={handleFileChange}
-                style={{ padding: "12px", fontSize: "1rem", borderRadius: "8px" }}
+                style={{ padding: "12px", borderRadius: "8px" }}
               />
               {file && (
                 <small className="text-muted d-block mt-2">
@@ -175,7 +191,7 @@ export default function UploadAssignment() {
             {/* Upload Button */}
             <button
               className="btn btn-success w-100 py-3"
-              style={{ borderRadius: "10px", fontSize: "1.1rem", fontWeight: "600" }}
+              style={{ borderRadius: "10px", fontSize: "1.1rem" }}
               onClick={handleUpload}
               disabled={uploading}
             >
@@ -194,13 +210,10 @@ export default function UploadAssignment() {
           </div>
         </div>
 
-        {/* Uploaded Assignments List */}
+        {/* Assignments List */}
         <div
           className="card shadow-lg border-0"
-          style={{
-            borderRadius: "15px",
-            backgroundColor: "white",
-          }}
+          style={{ borderRadius: "15px", backgroundColor: "white" }}
         >
           <div className="card-body p-4 p-md-5">
             <h4 className="text-primary fw-bold mb-4">
@@ -226,14 +239,11 @@ export default function UploadAssignment() {
                       }}
                     >
                       <div className="card-body p-4">
-                        <div className="d-flex justify-content-between align-items-start mb-2">
-                          <div className="flex-grow-1">
-                            <h5 className="fw-bold text-dark mb-2">
-                              {assignment.title}
-                            </h5>
-                            <p className="text-muted mb-2" style={{ fontSize: "0.95rem" }}>
-                              {assignment.description}
-                            </p>
+                        <div className="d-flex justify-content-between align-items-start">
+                          <div>
+                            <h5 className="fw-bold text-dark">{assignment.title}</h5>
+                            <p className="text-muted">{assignment.description}</p>
+
                             <div className="d-flex flex-wrap gap-3 mt-3">
                               <span className="badge bg-success px-3 py-2">
                                 <FaCheckCircle className="me-1" />
@@ -247,14 +257,16 @@ export default function UploadAssignment() {
                                 📎 {assignment.fileName}
                               </span>
                             </div>
+
                             <small className="text-muted d-block mt-2">
-                              Uploaded on: {assignment.uploadedAt}
+                              Uploaded: {assignment.uploadedAt}
                             </small>
                           </div>
+
                           <button
-                            className="btn btn-outline-danger btn-sm ms-3"
+                            className="btn btn-outline-danger btn-sm"
                             onClick={() => handleDelete(assignment.id)}
-                            style={{ borderRadius: "8px", minWidth: "100px" }}
+                            style={{ borderRadius: "8px" }}
                           >
                             <FaTrash className="me-1" />
                             Delete
@@ -269,7 +281,7 @@ export default function UploadAssignment() {
               <div className="text-center py-5">
                 <div style={{ fontSize: "4rem", opacity: 0.3 }}>📭</div>
                 <p className="text-muted mt-3" style={{ fontSize: "1.1rem" }}>
-                  No assignments uploaded yet. Create your first assignment above!
+                  No assignments yet.
                 </p>
               </div>
             )}

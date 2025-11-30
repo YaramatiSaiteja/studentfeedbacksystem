@@ -9,7 +9,7 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  // Auto-set role from URL parameter
+  // Auto-set role from URL
   useEffect(() => {
     const roleParam = searchParams.get("role");
     if (roleParam === "student" || roleParam === "teacher") {
@@ -22,148 +22,116 @@ export default function Register() {
 
     const users = JSON.parse(localStorage.getItem("users")) || [];
 
-    // Check if user already exists
-    const existingUser = users.find(
-      (u) => u.email === email && u.role === role
-    );
-    if (existingUser) {
+    // Prevent duplicate accounts
+    if (users.find((u) => u.email === email && u.role === role)) {
       alert("User already exists! Please login instead.");
       navigate(`/login?role=${role}`);
       return;
     }
 
     const newUser = { name, email, password, role };
+
+    // Save into main users list
     users.push(newUser);
     localStorage.setItem("users", JSON.stringify(users));
 
-    alert("Registration successful! Please login now.");
+    // -------------------------------------------
+    // ADD NEW STUDENT TO "students" LIST
+    // -------------------------------------------
+    if (role === "student") {
+      const students = JSON.parse(localStorage.getItem("students")) || [];
+      students.push({ name, email });
+      localStorage.setItem("students", JSON.stringify(students));
+    }
+    // -------------------------------------------
+
+    alert("Registration successful! Please login.");
     navigate(`/login?role=${role}`);
   };
 
-  // Dynamic content based on role
   const isTeacher = role === "teacher";
+
   const iconUrl = isTeacher
     ? "https://cdn-icons-png.flaticon.com/512/3135/3135755.png"
     : "https://cdn-icons-png.flaticon.com/512/906/906343.png";
+
   const title = isTeacher ? "Teacher Registration" : "Student Registration";
   const subtitle = isTeacher
     ? "Create your teacher account to get started"
     : "Create your student account to get started";
 
+  const headerColor = isTeacher ? "#28a745" : "#0d6efd";
+
   return (
-    <div
-      style={{
-        minHeight: "calc(100vh - 120px)", // Fix footer
-        width: "100%",
-        background: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)", // Soft teal to pink
-        padding: "40px 20px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <div
-        className="card shadow-lg border-0"
-        style={{
-          maxWidth: "420px",
-          width: "100%",
-          borderRadius: "20px",
-          backgroundColor: "#ffffff",
-          padding: "2rem 2.5rem", // Reduced padding for smaller height
-        }}
-      >
+    <div className="register-page d-flex align-items-center justify-content-center">
+      <div className="card border-0 shadow-lg rounded-4 p-4 p-md-5 register-card">
         {/* Header */}
         <div className="text-center mb-3">
-          <img
-            src={iconUrl}
-            alt="Register Icon"
-            style={{ width: "70px", marginBottom: "8px" }}
-          />
-          <h3 className="fw-bold mb-1" style={{ color: isTeacher ? "#28a745" : "#007bff" }}>
+          <img src={iconUrl} alt="icon" className="register-icon" />
+          <h3 className="fw-bold mb-1" style={{ color: headerColor }}>
             {title}
           </h3>
-          <p className="text-muted mb-0" style={{ fontSize: "0.85rem" }}>
-            {subtitle}
-          </p>
+          <p className="text-muted small mb-0">{subtitle}</p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleRegister}>
-          {/* Role Selection */}
+          {/* Role */}
           <div className="mb-3">
-            <label className="form-label fw-semibold" style={{ fontSize: "0.9rem" }}>
-              Role
-            </label>
+            <label className="form-label fw-semibold small">Role</label>
             <select
-              className="form-select"
+              className="form-select rounded-3 py-2"
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              style={{ padding: "10px", fontSize: "0.95rem", borderRadius: "8px" }}
             >
               <option value="student">Student</option>
               <option value="teacher">Teacher</option>
             </select>
           </div>
 
-          {/* Full Name */}
+          {/* Name */}
           <div className="mb-3">
-            <label className="form-label fw-semibold" style={{ fontSize: "0.9rem" }}>
-              Full Name
-            </label>
+            <label className="form-label fw-semibold small">Full Name</label>
             <input
               type="text"
-              className="form-control"
+              className="form-control rounded-3 py-2"
               placeholder="Enter your full name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              style={{ padding: "10px", fontSize: "0.95rem", borderRadius: "8px" }}
             />
           </div>
 
           {/* Email */}
           <div className="mb-3">
-            <label className="form-label fw-semibold" style={{ fontSize: "0.9rem" }}>
-              Email
-            </label>
+            <label className="form-label fw-semibold small">Email</label>
             <input
               type="email"
-              className="form-control"
+              className="form-control rounded-3 py-2"
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              style={{ padding: "10px", fontSize: "0.95rem", borderRadius: "8px" }}
             />
           </div>
 
           {/* Password */}
-          <div className="mb-3">
-            <label className="form-label fw-semibold" style={{ fontSize: "0.9rem" }}>
-              Password
-            </label>
+          <div className="mb-4">
+            <label className="form-label fw-semibold small">Password</label>
             <input
               type="password"
-              className="form-control"
+              className="form-control rounded-3 py-2"
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              style={{ padding: "10px", fontSize: "0.95rem", borderRadius: "8px" }}
             />
           </div>
 
           {/* Register Button */}
           <button
-            className="btn w-100 mt-2"
-            style={{
-              backgroundColor: isTeacher ? "#28a745" : "#007bff",
-              color: "white",
-              fontWeight: "600",
-              borderRadius: "10px",
-              padding: "10px",
-              fontSize: "1rem",
-            }}
+            className="btn w-100 text-white fw-semibold py-2 rounded-3"
+            style={{ backgroundColor: headerColor }}
           >
             Register
           </button>
@@ -171,14 +139,11 @@ export default function Register() {
 
         {/* Login Link */}
         <div className="text-center mt-3">
-          <p className="mb-0 text-muted" style={{ fontSize: "0.85rem" }}>
+          <p className="text-muted small mb-0">
             Already have an account?{" "}
             <span
-              style={{
-                color: isTeacher ? "#28a745" : "#007bff",
-                cursor: "pointer",
-                fontWeight: "600",
-              }}
+              className="fw-semibold"
+              style={{ color: headerColor, cursor: "pointer" }}
               onClick={() => navigate(`/login?role=${role}`)}
             >
               Login here
@@ -186,6 +151,44 @@ export default function Register() {
           </p>
         </div>
       </div>
+
+      {/* Styles */}
+      <style>
+        {`
+    .register-page {
+      min-height: calc(100vh - 120px);
+      width: 100%;
+      padding: 40px 20px;
+      background: #e6e9ef;
+      transition: 0.3s;
+    }
+
+    .register-card {
+      width: 420px;
+      background: #ffffff;
+      border-radius: 20px;
+    }
+
+    .register-icon {
+      width: 70px;
+      margin-bottom: 10px;
+    }
+
+    /* Dark Theme */
+    .dark-theme .register-page {
+      background-color: #121212 !important;
+    }
+
+    .dark-theme .register-card {
+      background-color: #1f1f1f !important;
+      color: #e0e0e0 !important;
+    }
+    
+    .dark-theme .text-muted {
+      color: #b5b5b5 !important;
+    }
+  `}
+      </style>
     </div>
   );
 }

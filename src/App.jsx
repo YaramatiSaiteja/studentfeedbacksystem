@@ -1,5 +1,11 @@
 import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate
+} from "react-router-dom";
+
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./Pages/Home";
@@ -15,9 +21,14 @@ import TeacherFeedback from "./Pages/TeacherFeedback";
 import Deadlines from "./Pages/Deadlines";
 import About from "./Pages/About";
 import Contact from "./Pages/Contact";
+import ViewGrades from "./Pages/ViewGrades";
 import { useTheme } from "./context/ThemeContext";
+import Announcements from "./Pages/Announcements";
 
-// ✅ Separate component for routing logic
+
+// ---------------------------
+// Separate AppContent component
+// ---------------------------
 function AppContent() {
   const navigate = useNavigate();
 
@@ -38,13 +49,25 @@ function AppContent() {
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
 
-      {/* 🎓 Student Routes */}
+      {/* 🎓 Student Pages */}
       <Route path="/student" element={<StudentDashboard />} />
-      <Route path="/upload" element={<SubmitAssignment />} />
-      <Route path="/feedback" element={<Feedback />} />
-      <Route path="/deadlines" element={<Deadlines />} />
 
-      {/* 👩‍🏫 Teacher Routes */}
+      {/* Student Upload (Submit Assignment) */}
+      <Route path="/upload" element={<SubmitAssignment />} />
+
+      {/* Student Feedback Page */}
+      <Route path="/feedback" element={<Feedback />} />
+
+      {/* Student Grades Page */}
+      <Route path="/viewgrades" element={<ViewGrades />} />
+
+      {/* Deadlines */}
+      <Route path="/deadlines" element={<Deadlines />} />
+      {/* Announcements */}
+      <Route path="/announcements" element={<Announcements />} />
+
+
+      {/* 👩‍🏫 Teacher Pages */}
       <Route path="/teacher" element={<TeacherDashboard />} />
       <Route path="/upload-assignment" element={<UploadAssignment />} />
       <Route path="/grade" element={<GradeAssignments />} />
@@ -53,7 +76,9 @@ function AppContent() {
   );
 }
 
-// ✅ Main App Wrapper
+// ---------------------------
+// MAIN APP COMPONENT (DEFAULT EXPORT)
+// ---------------------------
 export default function App() {
   const { darkMode } = useTheme();
 
@@ -64,17 +89,16 @@ export default function App() {
           minHeight: "100vh",
           display: "flex",
           flexDirection: "column",
-          width: "100%",
+          width: "100%"
         }}
         className={darkMode ? "bg-dark text-light" : "bg-light text-dark"}
       >
         <Navbar />
-        
-        {/* Main content area - takes remaining space */}
+
         <main style={{ flex: 1, width: "100%" }}>
           <AppContent />
         </main>
-        
+
         <Footer />
       </div>
     </Router>

@@ -6,78 +6,108 @@ export default function Home() {
   const navigate = useNavigate();
 
   return (
-    <div
-      style={{
-        minHeight: "calc(100vh - 120px)",
-        width: "100%",
-        background: "linear-gradient(135deg, #74b9ff, #00b894)",
-        padding: "40px 20px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <div className="container" style={{ maxWidth: "700px" }}>
-        <div
-          className="card border-0 shadow-lg"
-          style={{
-            background: "rgba(255, 255, 255, 0.95)",
-            borderRadius: "1.5rem",
-            padding: "2.5rem 2rem",
-          }}
-        >
-          <div className="text-center">
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-              alt="Online Grading Portal"
-              style={{
-                width: "130px",
-                height: "130px",
-                borderRadius: "50%",
-                border: "3px solid #00b894",
-                boxShadow: "0 0 10px rgba(0,0,0,0.2)",
-                display: "block",
-                margin: "0 auto 1.5rem auto",
-              }}
-            />
-
-            <h1 
-              className="fw-bold mb-3 text-primary"
-              style={{ fontSize: "1.75rem" }}
-            >
-              Welcome to the Online Grading Portal
-            </h1>
-
-            <p 
-              className="text-muted mb-4"
-              style={{ fontSize: "1rem", lineHeight: "1.6" }}
-            >
-              A smart way to manage assignments, submissions, and grades. Students
-              can submit and track their work, while teachers can review, grade, and
-              give feedback effortlessly — all in one place!
-            </p>
-
-            <div className="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+    <section className="hero-section min-vh-100 d-flex align-items-center">
+      <div className="container">
+        <div className="row align-items-center g-5">
+          {/* Left Content */}
+          <div className="col-lg-6">
+            <div className="hero-content">
+              <h1 className="hero-title mb-4">
+                Smart Assignment & Submission Portal
+              </h1>
+              <p className="hero-subtitle mb-5">
+                Streamline assignment workflows for teachers and students. Upload, submit, grade, and track — all in one smart platform.
+              </p>
               <button
-                className="btn btn-warning btn-lg px-4 py-2"
-                onClick={() => {
-                  navigate("/login?role=student");
-                }}
+                className="btn btn-get-started btn-lg px-5 py-3 fw-semibold rounded-pill"
+                onClick={() => navigate("/login")}
               >
-                👩‍🎓 Student Login
+                Get Started
               </button>
-              <button
-                className="btn btn-success btn-lg px-4 py-2"
-                onClick={() => {
-                  navigate("/login?role=teacher");
-                }}
-              >
-                👨‍🏫 Teacher Login
-              </button>
+            </div>
+          </div>
+
+          {/* Right Image */}
+          <div className="col-lg-6">
+            <div className="hero-image-wrapper">
+             <img
+               src={`${import.meta.env.BASE_URL}images/assignment.png`}
+                alt="Smart Assignment Portal Illustration"
+                 className="hero-image img-fluid"
+                />
             </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Custom Styles */}
+      <style>{`
+        .hero-section {
+          background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+          color: #1e293b;
+          padding: 3rem 0;
+        }
+
+        .hero-title {
+          font-size: clamp(2.5rem, 6vw, 4rem);
+          font-weight: 700;
+          font-family: 'Inter', sans-serif;
+          letter-spacing: -0.02em;
+          margin-bottom: 1rem;
+          color: #1e293b;
+        }
+
+        .hero-subtitle {
+          font-size: 1.2rem;
+          color: #475569;
+          font-weight: 400;
+          max-width: 480px;
+          line-height: 1.6;
+          margin-bottom: 2rem;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .btn-get-started {
+          background: linear-gradient(135deg, #22c55e, #14b8a6);
+          border: none;
+          font-family: 'Inter', sans-serif;
+          font-weight: 600;
+          font-size: 1.1rem;
+          box-shadow: 0 12px 30px rgba(20, 184, 166, 0.4);
+          transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .btn-get-started:hover {
+          background: linear-gradient(135deg, #16a34a, #0f766e);
+          transform: translateY(-4px);
+          box-shadow: 0 18px 42px rgba(20, 184, 166, 0.5);
+        }
+
+        .hero-image-wrapper {
+          text-align: center;
+        }
+
+        .hero-image {
+          max-width: 100%;
+          border-radius: 24px;
+          box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+          transition: transform 0.3s ease;
+        }
+
+        .hero-image:hover {
+          transform: scale(1.05);
+        }
+
+        @media (max-width: 992px) {
+          .hero-section {
+            text-align: center;
+          }
+          .hero-image {
+            max-width: 360px;
+            margin: 0 auto;
+          }
+        }
+      `}</style>
+    </section>
   );
 }

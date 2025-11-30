@@ -1,15 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
+import { addNotification } from "../utils/notify";  // ⭐ ADDED
 
 export default function StudentDashboard() {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("loggedInUser"));
+  const user = JSON.parse(localStorage.getItem("loggedUser"));
+
+  const [assignments, setAssignments] = useState([]);
+
+  // Load assignments
+  useEffect(() => {
+    const data = JSON.parse(localStorage.getItem("assignments")) || [];
+    setAssignments(data);
+  }, []);
+
+  const totalAssignments = assignments.length;
+  const pendingDeadlines = assignments.filter(
+    (a) => new Date(a.deadline) > new Date()
+  ).length;
+
+  // Helper → Trigger notifications
+  const notify = (msg) => {
+    addNotification(user.email, msg);
+  };
 
   return (
     <div
       style={{
-        minHeight: "calc(100vh - 120px)", // Subtract navbar + footer
+        minHeight: "calc(100vh - 120px)",
         width: "100%",
         background: "linear-gradient(135deg, #e8f5e9, #f1f8e9)",
         padding: "60px 20px 40px",
@@ -24,52 +43,32 @@ export default function StudentDashboard() {
           🎓 Welcome, {user?.name || "Student"}!
         </h2>
         <p className="text-muted" style={{ fontSize: "1.1rem" }}>
-          Manage your assignments, view feedback, and stay on top of deadlines.
+          You have <b>{totalAssignments}</b> assignments &{" "}
+          <b>{pendingDeadlines}</b> upcoming deadlines.
         </p>
       </div>
 
-      {/* Dashboard Cards */}
-      <div 
-        className="row justify-content-center w-100 g-4" 
-        style={{ maxWidth: "1200px" }}
-      >
+      {/* Cards */}
+      <div className="row justify-content-center w-100 g-4" style={{ maxWidth: "1200px" }}>
+
         {/* Upload Assignments */}
         <div className="col-12 col-md-6 col-lg-4">
-          <div 
+          <div
             className="card h-100 shadow-lg border-0 text-center"
-            style={{
-              borderRadius: "15px",
-              transition: "transform 0.3s ease, box-shadow 0.3s ease",
-              cursor: "pointer",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-8px)";
-              e.currentTarget.style.boxShadow = "0 12px 24px rgba(0,0,0,0.15)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)";
-            }}
+            style={{ borderRadius: "15px", transition: "0.3s", cursor: "pointer" }}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-8px)")}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
           >
             <div className="card-body p-5">
-              <div 
-                style={{
-                  fontSize: "3rem",
-                  marginBottom: "1.5rem",
-                }}
-              >
-                📤
-              </div>
-              <h5 className="card-title text-success fw-bold mb-3" style={{ fontSize: "1.5rem" }}>
-                Upload Assignments
-              </h5>
-              <p className="card-text text-muted mb-4" style={{ fontSize: "1rem" }}>
-                Submit your assignments easily and track submission status.
-              </p>
+              <div style={{ fontSize: "3rem", marginBottom: "1.5rem" }}>📤</div>
+              <h5 className="text-success fw-bold mb-3">Upload Assignments</h5>
+
               <button
                 className="btn btn-success w-100 py-2"
-                style={{ borderRadius: "10px", fontSize: "1.1rem" }}
-                onClick={() => navigate("/upload")}
+                onClick={() => {
+                  notify("📤 You opened Upload Assignment page.");
+                  navigate("/upload");
+                }}
               >
                 Go <FaArrowRight className="ms-2" />
               </button>
@@ -77,43 +76,24 @@ export default function StudentDashboard() {
           </div>
         </div>
 
-        {/* Review Feedback */}
+        {/* Feedback */}
         <div className="col-12 col-md-6 col-lg-4">
-          <div 
+          <div
             className="card h-100 shadow-lg border-0 text-center"
-            style={{
-              borderRadius: "15px",
-              transition: "transform 0.3s ease, box-shadow 0.3s ease",
-              cursor: "pointer",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-8px)";
-              e.currentTarget.style.boxShadow = "0 12px 24px rgba(0,0,0,0.15)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)";
-            }}
+            style={{ borderRadius: "15px", transition: "0.3s", cursor: "pointer" }}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-8px)")}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
           >
             <div className="card-body p-5">
-              <div 
-                style={{
-                  fontSize: "3rem",
-                  marginBottom: "1.5rem",
-                }}
-              >
-                📝
-              </div>
-              <h5 className="card-title text-primary fw-bold mb-3" style={{ fontSize: "1.5rem" }}>
-                Review Feedback
-              </h5>
-              <p className="card-text text-muted mb-4" style={{ fontSize: "1rem" }}>
-                Check teacher's comments, grades, and improvement suggestions.
-              </p>
+              <div style={{ fontSize: "3rem", marginBottom: "1.5rem" }}>📝</div>
+              <h5 className="text-primary fw-bold mb-3">Review Feedback</h5>
+
               <button
                 className="btn btn-primary w-100 py-2"
-                style={{ borderRadius: "10px", fontSize: "1.1rem" }}
-                onClick={() => navigate("/feedback")}
+                onClick={() => {
+                  notify("📝 You checked teacher feedback.");
+                  navigate("/feedback");
+                }}
               >
                 Go <FaArrowRight className="ms-2" />
               </button>
@@ -121,49 +101,57 @@ export default function StudentDashboard() {
           </div>
         </div>
 
-        {/* View Deadlines */}
+        {/* Deadlines */}
         <div className="col-12 col-md-6 col-lg-4">
-          <div 
+          <div
             className="card h-100 shadow-lg border-0 text-center"
-            style={{
-              borderRadius: "15px",
-              transition: "transform 0.3s ease, box-shadow 0.3s ease",
-              cursor: "pointer",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-8px)";
-              e.currentTarget.style.boxShadow = "0 12px 24px rgba(0,0,0,0.15)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)";
-            }}
+            style={{ borderRadius: "15px", transition: "0.3s", cursor: "pointer" }}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-8px)")}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
           >
             <div className="card-body p-5">
-              <div 
-                style={{
-                  fontSize: "3rem",
-                  marginBottom: "1.5rem",
-                }}
-              >
-                ⏰
-              </div>
-              <h5 className="card-title text-warning fw-bold mb-3" style={{ fontSize: "1.5rem" }}>
-                View Deadlines
-              </h5>
-              <p className="card-text text-muted mb-4" style={{ fontSize: "1rem" }}>
-                Stay updated with assignment due dates and never miss one.
-              </p>
+              <div style={{ fontSize: "3rem", marginBottom: "1.5rem" }}>⏰</div>
+              <h5 className="text-warning fw-bold mb-3">View Deadlines</h5>
+
               <button
                 className="btn btn-warning w-100 py-2 text-white"
-                style={{ borderRadius: "10px", fontSize: "1.1rem" }}
-                onClick={() => navigate("/deadlines")}
+                onClick={() => {
+                  notify("⏰ You viewed upcoming deadlines.");
+                  navigate("/deadlines");
+                }}
               >
                 Go <FaArrowRight className="ms-2" />
               </button>
             </div>
           </div>
         </div>
+
+        {/* Grades */}
+        <div className="col-12 col-md-6 col-lg-4">
+          <div
+            className="card h-100 shadow-lg border-0 text-center"
+            style={{ borderRadius: "15px", transition: "0.3s", cursor: "pointer" }}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-8px)")}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
+          >
+            <div className="card-body p-5">
+              <div style={{ fontSize: "3rem", marginBottom: "1.5rem" }}>🏅</div>
+              <h5 className="text-danger fw-bold mb-3">View Grades</h5>
+
+              <button
+                className="btn btn-danger w-100 py-2"
+                onClick={() => {
+                  notify("🏅 You checked your grades.");
+                  navigate("/viewgrades");
+                }}
+              >
+                Go <FaArrowRight className="ms-2" />
+              </button>
+
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );

@@ -1,74 +1,109 @@
-/* Reset and base styles */
+/* ------------------------------------
+   GLOBAL RESET
+-------------------------------------*/
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html {
+html, body {
   height: 100%;
   width: 100%;
   overflow-x: hidden;
-}
-
-body {
-  margin: 0 !important;
-  padding: 0 !important;
-  min-height: 100vh;
-  width: 100%;
-  overflow-x: hidden;
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
+/* Prevent root shifting */
 #root {
   min-height: 100vh;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Typography */
-h1 {
-  font-size: 2.5em;
-  line-height: 1.1;
+/* ------------------------------------
+   TYPOGRAPHY
+-------------------------------------*/
+h1, h2, h3, h4, h5 {
+  font-weight: 600;
 }
 
-/* Links */
+p {
+  line-height: 1.6;
+}
+
+/* ------------------------------------
+   LINKS
+-------------------------------------*/
 a {
   font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+  text-decoration: none;
+  color: #0d6efd;
 }
 
 a:hover {
-  color: #535bf2;
+  color: #0a58ca;
 }
 
-/* Buttons */
+/* ------------------------------------
+   BUTTONS
+-------------------------------------*/
 button {
   cursor: pointer;
   font-family: inherit;
+  border: none;
 }
 
-/* Light/Dark mode support */
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  
-  a:hover {
-    color: #747bff;
-  }
+/* ------------------------------------
+   BOOTSTRAP FIXES
+-------------------------------------*/
+.card {
+  border-radius: 1rem !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
-  }
+.badge {
+  font-weight: 600 !important;
+}
+
+/* ------------------------------------
+   DARK MODE SUPPORT
+-------------------------------------*/
+.dark-theme {
+  background-color: #121212 !important;
+  color: #f1f1f1 !important;
+}
+
+.dark-theme .card {
+  background: #1f1f1f !important;
+  color: #e0e0e0 !important;
+}
+
+.dark-theme .text-muted {
+  color: #bdbdbd !important;
+}
+
+.dark-theme .badge.bg-light {
+  background-color: #333 !important;
+  color: #eee !important;
+}
+
+/* ------------------------------------
+   SCROLLBAR (Modern Look)
+-------------------------------------*/
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #eaeaea;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #b5b5b5;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #999;
 }

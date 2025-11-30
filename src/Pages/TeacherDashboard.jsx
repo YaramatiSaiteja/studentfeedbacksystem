@@ -1,168 +1,138 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
+import { addNotification } from "../utils/notify";   
 
 export default function TeacherDashboard() {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("loggedInUser"));
+  const user = JSON.parse(localStorage.getItem("loggedUser"));
 
   return (
-    <div
-      style={{
-        minHeight: "calc(100vh - 120px)", // Subtract navbar + footer
-        width: "100%",
-        background: "linear-gradient(135deg, #e3f2fd, #e8f5e9)",
-        padding: "60px 20px 40px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
+    <div className="teacher-dashboard-page d-flex flex-column align-items-center">
+      
       {/* Header */}
       <div className="text-center mb-5">
-        <h2 className="text-primary fw-bold" style={{ fontSize: "2rem" }}>
+        <h2 className="fw-bold text-primary" style={{ fontSize: "2rem" }}>
           👩‍🏫 Welcome, {user?.name || "Teacher"}!
         </h2>
         <p className="text-muted" style={{ fontSize: "1.1rem" }}>
-          Manage assignments, grade submissions, and provide feedback to students.
+          Manage assignments, grade submissions, and provide feedback.
         </p>
       </div>
 
       {/* Dashboard Cards */}
-      <div 
-        className="row justify-content-center w-100 g-4" 
-        style={{ maxWidth: "1200px" }}
-      >
+      <div className="row w-100 justify-content-center g-4" style={{ maxWidth: "1200px" }}>
+
         {/* Upload Assignments */}
-        <div className="col-12 col-md-6 col-lg-4">
-          <div 
-            className="card h-100 shadow-lg border-0 text-center"
-            style={{
-              borderRadius: "15px",
-              transition: "transform 0.3s ease, box-shadow 0.3s ease",
-              cursor: "pointer",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-8px)";
-              e.currentTarget.style.boxShadow = "0 12px 24px rgba(0,0,0,0.15)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)";
-            }}
-          >
-            <div className="card-body p-5">
-              <div 
-                style={{
-                  fontSize: "3rem",
-                  marginBottom: "1.5rem",
-                }}
-              >
-                📤
-              </div>
-              <h5 className="card-title text-primary fw-bold mb-3" style={{ fontSize: "1.5rem" }}>
-                Upload Assignments
-              </h5>
-              <p className="card-text text-muted mb-4" style={{ fontSize: "1rem" }}>
-                Create and upload new assignments for your students.
-              </p>
-              <button
-                className="btn btn-primary w-100 py-2"
-                style={{ borderRadius: "10px", fontSize: "1.1rem" }}
-                onClick={() => navigate("/upload-assignment")}
-              >
-                Go <FaArrowRight className="ms-2" />
-              </button>
-            </div>
-          </div>
-        </div>
+        <DashboardCard
+          title="Upload Assignments"
+          icon="📤"
+          color="primary"
+          text="Create and upload new assignments for your students."
+          onClick={() => {
+            navigate("/upload-assignment");
+          }}
+        />
 
         {/* Grade Assignments */}
-        <div className="col-12 col-md-6 col-lg-4">
-          <div 
-            className="card h-100 shadow-lg border-0 text-center"
-            style={{
-              borderRadius: "15px",
-              transition: "transform 0.3s ease, box-shadow 0.3s ease",
-              cursor: "pointer",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-8px)";
-              e.currentTarget.style.boxShadow = "0 12px 24px rgba(0,0,0,0.15)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)";
-            }}
-          >
-            <div className="card-body p-5">
-              <div 
-                style={{
-                  fontSize: "3rem",
-                  marginBottom: "1.5rem",
-                }}
-              >
-                🏆
-              </div>
-              <h5 className="card-title text-success fw-bold mb-3" style={{ fontSize: "1.5rem" }}>
-                Grade Assignments
-              </h5>
-              <p className="card-text text-muted mb-4" style={{ fontSize: "1rem" }}>
-                Review and grade student submissions with feedback.
-              </p>
-              <button
-                className="btn btn-success w-100 py-2"
-                style={{ borderRadius: "10px", fontSize: "1.1rem" }}
-                onClick={() => navigate("/grade")}
-              >
-                Go <FaArrowRight className="ms-2" />
-              </button>
-            </div>
-          </div>
-        </div>
+        <DashboardCard
+          title="Grade Assignments"
+          icon="🏆"
+          color="success"
+          text="Review and grade student submissions with feedback."
+          onClick={() => {
+            navigate("/grade");
+          }}
+        />
 
-        {/* Teacher Feedback - REPLACED View Reports */}
-        <div className="col-12 col-md-6 col-lg-4">
-          <div 
-            className="card h-100 shadow-lg border-0 text-center"
-            style={{
-              borderRadius: "15px",
-              transition: "transform 0.3s ease, box-shadow 0.3s ease",
-              cursor: "pointer",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-8px)";
-              e.currentTarget.style.boxShadow = "0 12px 24px rgba(0,0,0,0.15)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)";
-            }}
-          >
-            <div className="card-body p-5">
-              <div 
-                style={{
-                  fontSize: "3rem",
-                  marginBottom: "1.5rem",
-                }}
-              >
-                💬
-              </div>
-              <h5 className="card-title text-warning fw-bold mb-3" style={{ fontSize: "1.5rem" }}>
-                Provide Feedback
-              </h5>
-              <p className="card-text text-muted mb-4" style={{ fontSize: "1rem" }}>
-                Write personalized feedback for students by subject.
-              </p>
-              <button
-                className="btn btn-warning w-100 py-2 text-white"
-                style={{ borderRadius: "10px", fontSize: "1.1rem" }}
-                onClick={() => navigate("/teacher-feedback")}
-              >
-                Go <FaArrowRight className="ms-2" />
-              </button>
-            </div>
+        {/* Provide Feedback */}
+        <DashboardCard
+          title="Provide Feedback"
+          icon="💬"
+          color="warning"
+          text="Write personalized feedback for your students."
+          onClick={() => {
+            navigate("/teacher-feedback");
+          }}
+        />
+
+      </div>
+
+      {/* Styles */}
+      <style>
+        {`
+          .teacher-dashboard-page {
+            min-height: calc(100vh - 120px);
+            width: 100%;
+            padding: 60px 20px;
+            background-color: #f5f7fa;
+            transition: 0.3s;
+          }
+
+          .dashboard-card {
+            border-radius: 15px;
+            background-color: var(--bs-body-bg);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+          }
+
+          .dashboard-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+          }
+
+          /* Dark Mode */
+          .dark-theme .teacher-dashboard-page {
+            background-color: #121212 !important;
+          }
+
+          .dark-theme .dashboard-card {
+            background-color: #1f1f1f !important;
+            color: #e0e0e0 !important;
+          }
+
+          .dark-theme .text-muted {
+            color: #b5b5b5 !important;
+          }
+        `}
+      </style>
+    </div>
+  );
+}
+
+/* Reusable Dashboard Card Component */
+function DashboardCard({ title, icon, color, text, onClick }) {
+  return (
+    <div className="col-12 col-md-6 col-lg-4">
+      <div className="card h-100 shadow-lg border-0 dashboard-card text-center">
+        <div className="card-body p-5">
+
+          {/* Icon */}
+          <div style={{ fontSize: "3rem", marginBottom: "1.5rem" }}>
+            {icon}
           </div>
+
+          {/* Title */}
+          <h5
+            className={`fw-bold text-${color} mb-3`}
+            style={{ fontSize: "1.5rem" }}
+          >
+            {title}
+          </h5>
+
+          {/* Description */}
+          <p className="text-muted mb-4" style={{ fontSize: "1rem" }}>
+            {text}
+          </p>
+
+          {/* Button */}
+          <button
+            className={`btn btn-${color} w-100 py-2 text-white rounded-3 fw-semibold`}
+            style={{ fontSize: "1.1rem" }}
+            onClick={onClick}
+          >
+            Go <FaArrowRight className="ms-2" />
+          </button>
+
         </div>
       </div>
     </div>
