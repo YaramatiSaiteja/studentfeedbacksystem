@@ -1,35 +1,31 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from 'react';
 
 const ThemeContext = createContext();
 
+export const useTheme = () => useContext(ThemeContext);
+
 export const ThemeProvider = ({ children }) => {
-  // Load saved theme from localStorage
-  const savedTheme = localStorage.getItem("darkMode") === "true";
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem('sfh_theme');
+    return savedTheme === 'dark';
+  });
 
-  const [darkMode, setDarkMode] = useState(savedTheme);
-
-  const toggleTheme = () => {
-    const newTheme = !darkMode;
-    setDarkMode(newTheme);
-    localStorage.setItem("darkMode", newTheme); // Save to localStorage
-  };
-
-  // Apply theme class to body
   useEffect(() => {
-    if (darkMode) {
-      document.body.classList.add("dark-theme");
-      document.body.classList.remove("light-theme");
+    localStorage.setItem('sfh_theme', isDarkMode ? 'dark' : 'light');
+    if (isDarkMode) {
+      document.body.classList.add('dark-mode');
+      document.body.classList.remove('light-mode');
     } else {
-      document.body.classList.add("light-theme");
-      document.body.classList.remove("dark-theme");
+      document.body.classList.add('light-mode');
+      document.body.classList.remove('dark-mode');
     }
-  }, [darkMode]);
+  }, [isDarkMode]);
+
+  const toggleTheme = () => setIsDarkMode(prev => !prev);
 
   return (
-    <ThemeContext.Provider value={{ darkMode, toggleTheme }}>
+    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );
 };
-
-export const useTheme = () => useContext(ThemeContext);
