@@ -270,7 +270,7 @@ const AdminDashboard = () => {
             navigate('/admin/students');
             return;
         }
-        if (query.includes('course') || query.includes('deploy')) {
+        if (query.includes('course') || query.includes('form')) {
             navigate('/admin/courses');
             return;
         }
@@ -351,15 +351,6 @@ const AdminDashboard = () => {
                         <li className="nav-item">
                             <NavLink to="/admin/students" className={({ isActive }) => `nav-link fw-medium d-flex align-items-center rounded px-3 py-2 transition-colors ${isActive ? 'active text-white bg-primary shadow-sm' : 'text-muted hover-text-dark sidebar-link-hover'}`} onClick={() => setSidebarOpen(false)}>
                                 <FaUsers className="me-3 fs-5" /> Students
-                            </NavLink>
-                        </li>
-                    </ul>
-
-                    <p className="text-muted small fw-bold text-uppercase mb-3 px-2">Management</p>
-                    <ul className="nav flex-column gap-2 mb-4">
-                        <li className="nav-item">
-                            <NavLink to="/admin/courses" className={({ isActive }) => `nav-link fw-medium d-flex align-items-center rounded px-3 py-2 transition-colors ${isActive ? 'active text-white bg-primary shadow-sm' : 'text-muted hover-text-dark sidebar-link-hover'}`} onClick={() => setSidebarOpen(false)}>
-                                <FaBookOpen className="me-3 fs-5" /> Deploy Course
                             </NavLink>
                         </li>
                     </ul>

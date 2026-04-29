@@ -165,7 +165,7 @@ const AdminStudents = () => {
             navigate('/admin/reports');
             return;
         }
-        if (query.includes('course') || query.includes('deploy')) {
+        if (query.includes('course') || query.includes('form')) {
             navigate('/admin/courses');
         }
     };
@@ -227,11 +227,11 @@ const AdminStudents = () => {
                         </li>
                     </ul>
 
-                    <p className="text-muted small fw-bold text-uppercase mb-3 px-2">Management</p>
+                    <p className="text-muted small fw-bold text-uppercase mb-3 px-2">Forms</p>
                     <ul className="nav flex-column gap-2 mb-4">
                         <li className="nav-item">
                             <NavLink to="/admin/courses" className={({ isActive }) => `nav-link fw-medium d-flex align-items-center rounded px-3 py-2 transition-colors ${isActive ? 'active text-white bg-primary shadow-sm' : 'text-muted hover-text-dark sidebar-link-hover'}`} onClick={() => setSidebarOpen(false)}>
-                                <FaBookOpen className="me-3 fs-5" /> Deploy Course
+                                <FaBookOpen className="me-3 fs-5" /> Course Forms
                             </NavLink>
                         </li>
                     </ul>
@@ -263,7 +263,7 @@ const AdminStudents = () => {
                             <input
                                 type="text"
                                 className="form-control bg-light border-0"
-                                placeholder="Search students or type reports/courses..."
+                                placeholder="Search students or type reports/forms..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />

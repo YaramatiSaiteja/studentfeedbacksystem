@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { getCourseById, submitFeedback as submitFeedbackApi } from '../utils/api';
-import { submitFeedback as submitFeedbackLocal } from '../utils/storage';
 import { getCurrentUser, logoutUser } from '../utils/auth';
 import { useTheme } from '../context/ThemeContext';
 import {
@@ -74,6 +73,7 @@ const SubmitFeedback = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setMessage('');
         try {
             await submitFeedbackApi({ courseId: Number(course.id), studentId: String(user.id), ...feedback });
             setSubmitted(true);
@@ -81,18 +81,8 @@ const SubmitFeedback = () => {
                 navigate('/student/dashboard');
             }, 1500);
         } catch (err) {
-            console.error('API submit failed, falling back to local storage:', err);
-            try {
-                submitFeedbackLocal({ courseId: String(course.id), studentId: String(user.id), ...feedback });
-                setSubmitted(true);
-                setMessage('Saved locally (offline). It will sync when server is available.');
-                setTimeout(() => {
-                    navigate('/student/dashboard');
-                }, 1500);
-            } catch (localErr) {
-                console.error('Local save failed:', localErr);
-                setMessage('Failed to submit feedback. Please try again.');
-            }
+            console.error('Feedback submit failed:', err);
+            setMessage(err.message || 'Failed to submit feedback to server. Please try again.');
         }
     };
 

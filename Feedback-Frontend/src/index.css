@@ -231,8 +231,7 @@ body.dark-mode .nav-link-custom {
 }
 
 .form-control:focus,
-.form-select:focus,
-.form-range:focus::-webkit-slider-thumb {
+.form-select:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 0.25rem rgba(75, 108, 183, 0.25);
 }
@@ -268,11 +267,13 @@ body.dark-mode .btn-outline-secondary {
     top: 0;
     left: 0;
     height: 100vh;
+    overflow-y: auto;
   }
 
   .admin-main-with-fixed-sidebar {
     margin-left: 280px;
     width: calc(100% - 280px);
+    min-height: 100vh;
   }
 }
 
@@ -358,4 +359,38 @@ body.dark-mode .text-muted {
 
 body.dark-mode .text-secondary {
   color: #cbd5e1 !important;
+}
+
+body.dark-mode .navbar {
+  background-color: var(--card-bg) !important;
+}
+
+body.dark-mode .border-bottom,
+body.dark-mode .border-end,
+body.dark-mode .border-top,
+body.dark-mode .border {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+body.dark-mode .sidebar .nav-link {
+  color: #cbd5e1 !important;
+}
+
+body.dark-mode .sidebar .nav-link.active {
+  color: #ffffff !important;
+}
+
+body.dark-mode .dropdown-menu {
+  background-color: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+body.dark-mode .dropdown-item {
+  color: #e2e8f0;
+}
+
+body.dark-mode .dropdown-item:hover,
+body.dark-mode .dropdown-item:focus {
+  background-color: #334155;
+  color: #ffffff;
 }

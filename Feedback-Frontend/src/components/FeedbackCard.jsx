@@ -48,10 +48,8 @@ const FeedbackCard = ({ feedback }) => {
                     {feedback.subjectDifficulty && (
                         <div className="col-md-12 mt-2 d-flex align-items-center">
                             <strong className="me-2 text-dark small" style={{ width: '140px' }}>Subject Difficulty:</strong>
-                            <div className="progress flex-grow-1" style={{ height: '8px', maxWidth: '150px' }}>
-                                <div className={`progress-bar ${feedback.subjectDifficulty > 3 ? 'bg-danger' : feedback.subjectDifficulty < 3 ? 'bg-success' : 'bg-warning'}`} role="progressbar" style={{ width: `${(feedback.subjectDifficulty / 5) * 100}%` }}></div>
-                            </div>
-                            <span className="ms-3 small text-muted fw-bold">{feedback.subjectDifficulty}/5</span>
+                            <div>{renderStars(feedback.subjectDifficulty)}</div>
+                            <span className="ms-2 badge bg-warning bg-opacity-10 text-warning rounded-pill">{feedback.subjectDifficulty}/5</span>
                         </div>
                     )}
                 </div>

@@ -1,5 +1,10 @@
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8080';
+const rawApiBase = (import.meta.env.VITE_API_BASE || 'http://localhost:8080').trim();
+const API_BASE = rawApiBase.replace(/\/+$/, '');
 const TOKEN_KEY = 'sfh_token';
+
+if (import.meta.env.PROD && !import.meta.env.VITE_API_BASE) {
+    console.warn('VITE_API_BASE is not set in production. Falling back to http://localhost:8080');
+}
 
 const authHeaders = () => {
     const token = localStorage.getItem(TOKEN_KEY);
