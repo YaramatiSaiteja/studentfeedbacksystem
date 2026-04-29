@@ -3,7 +3,8 @@
 const CURRENT_USER_KEY = 'sfh_current_user';
 const TOKEN_KEY = 'sfh_token';
 const LOGIN_TIMESTAMP_KEY = 'sfh_login_at';
-const SESSION_DURATION_MS = 60 * 1000;
+// Keep users signed in for 24 hours by default
+const SESSION_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 const isSessionExpired = () => {
     const loginTimestamp = localStorage.getItem(LOGIN_TIMESTAMP_KEY);

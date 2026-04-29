@@ -23,6 +23,13 @@ const StudentDashboard = () => {
   const { isDarkMode, toggleTheme } = useTheme();
   const { id } = useParams();
 
+  useEffect(() => {
+    if (!user) {
+      // If no user in storage or session expired, send to login
+      navigate('/login');
+    }
+  }, [user, navigate]);
+
   const loadData = async () => {
     if (user && user.id) {
       try {
@@ -144,6 +151,8 @@ const StudentDashboard = () => {
       <FaStar key={i} size={13} color={i < rating ? '#f59e0b' : '#d1d5db'} />
     ));
 
+  if (!user) return null;
+
   return (
     <div className="d-flex min-vh-100 flex-column flex-lg-row" style={{ backgroundColor: 'var(--bg-main)' }}>
 
@@ -256,12 +265,10 @@ const StudentDashboard = () => {
                 <span className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" style={{ width: 8, height: 8 }} />
               </button>
             </li>
-            <li className="nav-item dropdown d-flex align-items-center gap-2">
-              <div className="d-none d-sm-flex flex-column text-end">
-                <span className="fw-bold text-dark lh-sm" style={{ fontSize: '0.9rem' }}>{user.fullName}</span>
-                <span className="text-muted lh-sm" style={{ fontSize: '0.78rem' }}>
-                  Department: {user.department || 'Not set'}
-                </span>
+            <li className="nav-item dropdown d-flex align-items-center">
+              <div className="d-flex flex-column text-end me-3 d-none d-sm-flex">
+                <span className="fw-bold text-dark lh-sm">{user.fullName}</span>
+                <span className="text-muted small lh-sm">Department: {user.department || 'Not set'}</span>
               </div>
               <button
                 className="btn p-0 border-0 bg-transparent rounded-circle"
@@ -269,10 +276,7 @@ const StudentDashboard = () => {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                <div
-                  className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
-                  style={{ width: 40, height: 40, fontSize: '1.1rem' }}
-                >
+                <div className="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center" style={{ width: '40px', height: '40px', fontSize: '1.2rem' }}>
                   <FaUserCircle />
                 </div>
               </button>
@@ -404,14 +408,14 @@ const StudentDashboard = () => {
 
             {/* Active Courses */}
             <div className="col-12" id="active-courses-section">
-              <div className="card border-0 shadow-sm rounded-4 h-100">
-                <div className="card-header bg-white border-bottom px-4 py-3 d-flex justify-content-between align-items-center rounded-top-4">
+              <div className={`card border-0 shadow-sm rounded-4 h-100 ${isDarkMode ? 'bg-transparent' : ''}`}>
+                <div className={`card-header ${isDarkMode ? 'bg-dark text-light border-bottom' : 'bg-white border-bottom'} px-4 py-3 d-flex justify-content-between align-items-center rounded-top-4`}>
                   <h6 className="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
                     <FaChalkboardTeacher className="text-primary" /> Active Courses
                   </h6>
                   <button className="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold" onClick={() => navigate('/student/courses')}>View All</button>
                 </div>
-                <div className="card-body p-0">
+                <div className={`card-body p-0 ${isDarkMode ? 'bg-transparent' : ''}`}>
                   {filteredPendingCourses.length === 0 ? (
                     <div className="p-5 text-center">
                       <div className="rounded-circle bg-light d-inline-flex align-items-center justify-content-center mb-3" style={{ width: 64, height: 64, fontSize: '1.6rem' }}>
@@ -422,22 +426,34 @@ const StudentDashboard = () => {
                     </div>
                   ) : (
                     <ul className="list-group list-group-flush">
-                      {filteredPendingCourses.map(course => (
-                        <li key={course.id} className="list-group-item border-bottom px-4 py-3 d-flex justify-content-between align-items-center">
-                          <div>
-                            <p className="fw-bold text-dark mb-0" style={{ fontSize: '0.9rem' }}>{course.title}</p>
-                            <small className="text-muted d-flex align-items-center gap-1 mt-1">
-                              <FaUserCircle size={11} /> {course.instructor}
-                            </small>
-                          </div>
-                          <button
-                            className="btn btn-sm btn-outline-primary rounded-pill px-4 fw-bold"
-                            onClick={() => navigate(`/student/feedback/${course.id}`)}
-                          >
-                            Give Feedback
-                          </button>
-                        </li>
-                      ))}
+                      {filteredPendingCourses.map(course => {
+                        const submitted = studentFeedback.some(fb => String(fb.courseId) === String(course.id));
+                        return (
+                          <li key={course.id} className={`list-group-item border-bottom px-4 py-3 d-flex justify-content-between align-items-center ${isDarkMode ? 'bg-transparent' : ''}`}>
+                            <div>
+                              <p className={`fw-bold ${isDarkMode ? 'text-white' : 'text-dark'} mb-0`} style={{ fontSize: '0.9rem' }}>{course.title}</p>
+                              <small className={`${isDarkMode ? 'text-white-50' : 'text-muted'} d-flex align-items-center gap-1 mt-1`}>
+                                <FaUserCircle size={11} /> {course.instructor}
+                              </small>
+                            </div>
+                            {submitted ? (
+                              <button
+                                className={isDarkMode ? "btn btn-sm btn-dark w-100 fw-semibold rounded-pill" : "btn btn-sm btn-light border w-100 fw-semibold rounded-pill"}
+                                disabled
+                              >
+                                ✓ Feedback Submitted
+                              </button>
+                            ) : (
+                              <button
+                                className="btn btn-sm btn-outline-primary rounded-pill px-4 fw-bold"
+                                onClick={() => navigate(`/student/feedback/${course.id}`)}
+                              >
+                                Give Feedback
+                              </button>
+                            )}
+                          </li>
+                        );
+                      })}
                     </ul>
                   )}
                 </div>

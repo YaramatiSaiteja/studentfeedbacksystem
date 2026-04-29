@@ -16,7 +16,7 @@ const handleResponse = async (response) => {
     return data;
 };
 
-export const registerUser = async ({ fullName, email, password, role, department }) => {
+export const registerUser = async ({ fullName, email, password, role, department }) => { 
     const roleId = role === 'admin' ? 1 : 0;
     const response = await fetch(`${API_BASE}/api/users/register`, {
         method: 'POST',

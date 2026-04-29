@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { isAuthenticated, getCurrentUser, logoutUser } from '../utils/auth';
 import { useTheme } from '../context/ThemeContext';
-import { FaSun, FaMoon, FaGraduationCap } from 'react-icons/fa';
+import { FaSun, FaMoon, FaGraduationCap, FaSignOutAlt } from 'react-icons/fa';
 
 const navStyles = `
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
@@ -257,10 +257,29 @@ const Navbar = () => {
 
                     <div className="sfh-divider" />
 
-                    <li className="sfh-nav-item">
-                      <button onClick={handleLogout} className="sfh-btn-logout">
-                        Logout
+                    <li className="sfh-nav-item dropdown d-flex align-items-center">
+                      <div className="d-none d-sm-flex flex-column text-end me-2">
+                        <span className="fw-bold" style={{ fontSize: '0.9rem', color: '#fff' }}>{user.fullName}</span>
+                        <small className="text-muted" style={{ fontSize: '0.78rem' }}>{user.role}</small>
+                      </div>
+                      <button
+                        className="btn p-0 border-0 bg-transparent rounded-circle"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        style={{ width: 40, height: 40 }}
+                      >
+                        <div className="rounded-circle bg-white d-flex align-items-center justify-content-center" style={{ width: 40, height: 40, color: '#0a0a0a' }}>
+                          <FaGraduationCap />
+                        </div>
                       </button>
+                      <ul className="dropdown-menu dropdown-menu-end shadow-sm" style={{ minWidth: 160 }}>
+                        <li>
+                          <button className="dropdown-item text-danger fw-semibold" onClick={handleLogout}>
+                            <FaSignOutAlt className="me-2" /> Logout
+                          </button>
+                        </li>
+                      </ul>
                     </li>
                   </>
                 ) : (

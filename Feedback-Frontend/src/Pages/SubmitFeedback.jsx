@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
-import { getCourseById, submitFeedback } from '../utils/api';
+import { getCourseById, submitFeedback as submitFeedbackApi } from '../utils/api';
+import { submitFeedback as submitFeedbackLocal } from '../utils/storage';
 import { getCurrentUser, logoutUser } from '../utils/auth';
 import { useTheme } from '../context/ThemeContext';
 import {
@@ -9,14 +10,32 @@ import {
     FaCheckCircle, FaStar, FaArrowLeft
 } from 'react-icons/fa';
 
+const StarRating = ({ value = 5, onChange = () => {}, size = 20 }) => {
+    return (
+        <div className="d-flex align-items-center">
+            {[1,2,3,4,5].map(i => (
+                <button
+                    key={i}
+                    type="button"
+                    className="btn p-0 border-0 bg-transparent me-2"
+                    onClick={() => onChange(i)}
+                    aria-label={`Rate ${i}`}
+                >
+                    <FaStar size={size} color={i <= value ? '#f59e0b' : '#d1d5db'} />
+                </button>
+            ))}
+        </div>
+    );
+};
+
 const SubmitFeedback = () => {
     const [course, setCourse] = useState(null);
     const [feedback, setFeedback] = useState({
-        courseRating: 5,
-        instructorRating: 5,
-        contentQuality: 5,
-        subjectDifficulty: 3,
-        practicalApplication: 5,
+        courseRating: 1,
+        instructorRating: 1,
+        contentQuality: 1,
+        subjectDifficulty: 1,
+        practicalApplication: 1,
         comment: ''
     });
     const [message, setMessage] = useState('');
@@ -47,21 +66,33 @@ const SubmitFeedback = () => {
         loadCourse();
     }, [id, user, navigate]);
 
+    const numericFields = new Set(['courseRating','instructorRating','contentQuality','subjectDifficulty','practicalApplication']);
     const handleFeedbackChange = (e) => {
-        setFeedback({ ...feedback, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFeedback({ ...feedback, [name]: numericFields.has(name) ? Number(value) : value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await submitFeedback({ courseId: Number(course.id), studentId: String(user.id), ...feedback });
+            await submitFeedbackApi({ courseId: Number(course.id), studentId: String(user.id), ...feedback });
             setSubmitted(true);
             setTimeout(() => {
                 navigate('/student/dashboard');
-            }, 3000);
+            }, 1500);
         } catch (err) {
-            console.error('Failed to submit feedback:', err);
-            setMessage('Failed to submit feedback. Please try again.');
+            console.error('API submit failed, falling back to local storage:', err);
+            try {
+                submitFeedbackLocal({ courseId: String(course.id), studentId: String(user.id), ...feedback });
+                setSubmitted(true);
+                setMessage('Saved locally (offline). It will sync when server is available.');
+                setTimeout(() => {
+                    navigate('/student/dashboard');
+                }, 1500);
+            } catch (localErr) {
+                console.error('Local save failed:', localErr);
+                setMessage('Failed to submit feedback. Please try again.');
+            }
         }
     };
 
@@ -96,10 +127,10 @@ const SubmitFeedback = () => {
             )}
 
             {/* Sidebar */}
-            <div
-                className={`bg-white border-end flex-column ${sidebarOpen ? 'd-flex position-fixed' : 'd-none d-lg-flex'}`}
-                style={{ width: 240, height: '100vh', top: 0, left: 0, zIndex: 1050 }}
-            >
+                <div
+                    className={`bg-white border-end flex-column admin-fixed-sidebar ${sidebarOpen ? 'd-flex position-fixed' : 'd-none d-lg-flex'}`}
+                    style={{ width: 240, height: '100vh', top: 0, left: 0, zIndex: 1050 }}
+                >
                 <div className="p-4 border-bottom d-none d-lg-flex align-items-center gap-2">
                     <FaGraduationCap className="text-primary fs-4" />
                     <span className="fw-bold text-primary fs-5">Feedback Hub</span>
@@ -141,7 +172,7 @@ const SubmitFeedback = () => {
             </div>
 
             {/* Main Area */}
-            <div className="flex-grow-1 d-flex flex-column overflow-hidden">
+                <div className="flex-grow-1 d-flex flex-column overflow-hidden admin-main-with-fixed-sidebar">
                 <nav className="navbar bg-white border-bottom px-4 py-3 shadow-sm">
                     <div className="d-none d-md-flex">
                         <button className="btn btn-light rounded-pill border-0 px-4 fw-bold" onClick={() => navigate('/student/dashboard')}>
@@ -219,10 +250,9 @@ const SubmitFeedback = () => {
                                                 <div className="col-md-6">
                                                     <label className="form-label fw-bold text-dark mb-1">Overall Course Rating</label>
                                                     <p className="small text-muted mb-2">How would you rate the course overall?</p>
-                                                    <input type="range" className="form-range" min="1" max="5" name="courseRating" value={feedback.courseRating} onChange={handleFeedbackChange} />
-                                                    <div className="d-flex justify-content-between align-items-center mt-1">
+                                                    <StarRating value={feedback.courseRating} onChange={(v) => setFeedback({ ...feedback, courseRating: v })} />
+                                                    <div className="d-flex justify-content-between align-items-center mt-2">
                                                         <small className="text-muted fw-bold">1</small>
-                                                        <div className="d-flex gap-1">{renderStars(Number(feedback.courseRating))}</div>
                                                         <small className="text-muted fw-bold">5</small>
                                                     </div>
                                                 </div>
@@ -230,10 +260,9 @@ const SubmitFeedback = () => {
                                                 <div className="col-md-6">
                                                     <label className="form-label fw-bold text-dark mb-1">Instructor Effectiveness</label>
                                                     <p className="small text-muted mb-2">Rate {course.instructor}'s teaching.</p>
-                                                    <input type="range" className="form-range" min="1" max="5" name="instructorRating" value={feedback.instructorRating} onChange={handleFeedbackChange} />
-                                                    <div className="d-flex justify-content-between align-items-center mt-1">
+                                                    <StarRating value={feedback.instructorRating} onChange={(v) => setFeedback({ ...feedback, instructorRating: v })} />
+                                                    <div className="d-flex justify-content-between align-items-center mt-2">
                                                         <small className="text-muted fw-bold">1</small>
-                                                        <div className="d-flex gap-1">{renderStars(Number(feedback.instructorRating))}</div>
                                                         <small className="text-muted fw-bold">5</small>
                                                     </div>
                                                 </div>
@@ -241,10 +270,9 @@ const SubmitFeedback = () => {
                                                 <div className="col-md-6">
                                                     <label className="form-label fw-bold text-dark mb-1">Course Content & Material</label>
                                                     <p className="small text-muted mb-2">Were the study materials useful and clear?</p>
-                                                    <input type="range" className="form-range" min="1" max="5" name="contentQuality" value={feedback.contentQuality} onChange={handleFeedbackChange} />
-                                                    <div className="d-flex justify-content-between align-items-center mt-1">
+                                                    <StarRating value={feedback.contentQuality} onChange={(v) => setFeedback({ ...feedback, contentQuality: v })} />
+                                                    <div className="d-flex justify-content-between align-items-center mt-2">
                                                         <small className="text-muted fw-bold">1</small>
-                                                        <div className="d-flex gap-1">{renderStars(Number(feedback.contentQuality))}</div>
                                                         <small className="text-muted fw-bold">5</small>
                                                     </div>
                                                 </div>
@@ -252,10 +280,9 @@ const SubmitFeedback = () => {
                                                 <div className="col-md-6">
                                                     <label className="form-label fw-bold text-dark mb-1">Practical Application</label>
                                                     <p className="small text-muted mb-2">How relevant were the labs/practical tasks?</p>
-                                                    <input type="range" className="form-range" min="1" max="5" name="practicalApplication" value={feedback.practicalApplication} onChange={handleFeedbackChange} />
-                                                    <div className="d-flex justify-content-between align-items-center mt-1">
+                                                    <StarRating value={feedback.practicalApplication} onChange={(v) => setFeedback({ ...feedback, practicalApplication: v })} />
+                                                    <div className="d-flex justify-content-between align-items-center mt-2">
                                                         <small className="text-muted fw-bold">1</small>
-                                                        <div className="d-flex gap-1">{renderStars(Number(feedback.practicalApplication))}</div>
                                                         <small className="text-muted fw-bold">5</small>
                                                     </div>
                                                 </div>
@@ -263,10 +290,9 @@ const SubmitFeedback = () => {
                                                 <div className="col-md-12">
                                                     <label className="form-label fw-bold text-dark mb-1">Subject Difficulty</label>
                                                     <p className="small text-muted mb-2">How challenging was the subject curriculum?</p>
-                                                    <input type="range" className="form-range" min="1" max="5" name="subjectDifficulty" value={feedback.subjectDifficulty} onChange={handleFeedbackChange} />
-                                                    <div className="d-flex justify-content-between align-items-center mt-1">
+                                                    <StarRating value={feedback.subjectDifficulty} onChange={(v) => setFeedback({ ...feedback, subjectDifficulty: v })} />
+                                                    <div className="d-flex justify-content-between align-items-center mt-2">
                                                         <small className="text-muted fw-bold">Too Easy (1)</small>
-                                                        <div className="d-flex gap-1">{renderStars(Number(feedback.subjectDifficulty))}</div>
                                                         <small className="text-muted fw-bold">Too Hard (5)</small>
                                                     </div>
                                                 </div>
