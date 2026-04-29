@@ -27,19 +27,17 @@ const Signup = () => {
         <div
             className="d-flex flex-column min-vh-100"
             style={{
-                backgroundImage: `
-          radial-gradient(ellipse at top right, rgba(180,230,230,0.55) 0%, rgba(255,255,255,0) 60%),
-          linear-gradient(rgba(100,200,210,0.12) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(100,200,210,0.12) 1px, transparent 1px)
-        `,
+                backgroundImage: isDarkMode
+                    ? `radial-gradient(ellipse at top right, rgba(56,189,248,0.12) 0%, rgba(15,23,42,0) 60%), linear-gradient(rgba(56,189,248,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(56,189,248,0.06) 1px, transparent 1px)`
+                    : `radial-gradient(ellipse at top right, rgba(180,230,230,0.55) 0%, rgba(255,255,255,0) 60%), linear-gradient(rgba(100,200,210,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(100,200,210,0.12) 1px, transparent 1px)`,
                 backgroundSize: 'cover, 60px 60px, 60px 60px',
                 backgroundPosition: 'center, 0 0, 0 0',
-                backgroundColor: '#ffffff',
+                backgroundColor: isDarkMode ? '#0f172a' : '#ffffff',
             }}
         >
             <div className="container flex-grow-1 d-flex flex-column align-items-center justify-content-center py-5 mt-5">
                 <div style={{ maxWidth: '420px', width: '100%' }}>
-                    <div className="card shadow-lg border-0" style={{ borderRadius: '16px' }}>
+                    <div className="card shadow-lg border-0" style={{ borderRadius: '16px', backgroundColor: 'var(--card-bg)', color: 'var(--text-main)' }}>
                         <div
                             className="card-header text-white text-center py-4 position-relative"
                             style={{ borderRadius: '16px 16px 0 0', background: 'linear-gradient(90deg, #4b6cb7 0%, #182848 100%)' }}
@@ -53,7 +51,7 @@ const Signup = () => {
                                 <FaArrowLeft />
                             </Link>
                             <h3 className="mb-0 fw-bold mt-2">Create Account</h3>
-                            <p className="text-light mb-0 small">Join the feedback platform</p>
+                            <p className="mb-0 small" style={{ color: 'rgba(255,255,255,0.85)' }}>Join the feedback platform</p>
                         </div>
 
                         <div className="card-body p-4">

@@ -361,6 +361,42 @@ body.dark-mode .text-secondary {
   color: #cbd5e1 !important;
 }
 
+body.dark-mode .bg-white,
+body.dark-mode .bg-light {
+  background-color: #1e293b !important;
+}
+
+body.dark-mode .bg-white.text-dark,
+body.dark-mode .bg-light.text-dark,
+body.dark-mode .card .text-dark,
+body.dark-mode .navbar .text-dark {
+  color: #f8fafc !important;
+}
+
+body.dark-mode .card-header,
+body.dark-mode .modal-header,
+body.dark-mode .dropdown-menu,
+body.dark-mode .list-group-item {
+  background-color: #1e293b !important;
+  color: #e2e8f0 !important;
+}
+
+body.dark-mode .input-group-text,
+body.dark-mode .form-control,
+body.dark-mode .form-select,
+body.dark-mode .btn-light,
+body.dark-mode .btn-outline-light {
+  background-color: #0f172a !important;
+  color: #e2e8f0 !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+body.dark-mode .btn-outline-light:hover,
+body.dark-mode .btn-light:hover {
+  background-color: #334155 !important;
+  color: #ffffff !important;
+}
+
 body.dark-mode .navbar {
   background-color: var(--card-bg) !important;
 }

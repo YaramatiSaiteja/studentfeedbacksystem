@@ -45,9 +45,9 @@ const Login = () => {
     <div
       className="d-flex flex-column min-vh-100"
       style={{
-        /* Light white base with cyan radial glow top-right — matches screenshot */
-        background: 'radial-gradient(ellipse at top right, rgba(180,230,230,0.55) 0%, rgba(255,255,255,0) 60%), #ffffff',
-        /* Subtle cyan grid lines on top */
+        background: isDarkMode
+          ? 'radial-gradient(ellipse at top right, rgba(56,189,248,0.12) 0%, rgba(15,23,42,0) 60%), #0f172a'
+          : 'radial-gradient(ellipse at top right, rgba(180,230,230,0.55) 0%, rgba(255,255,255,0) 60%), #ffffff',
         backgroundImage: `
           radial-gradient(ellipse at top right, rgba(180,230,230,0.55) 0%, rgba(255,255,255,0) 60%),
           linear-gradient(rgba(100,200,210,0.12) 1px, transparent 1px),
@@ -55,14 +55,14 @@ const Login = () => {
         `,
         backgroundSize: 'cover, 60px 60px, 60px 60px',
         backgroundPosition: 'center, 0 0, 0 0',
-        backgroundColor: '#ffffff',
+        backgroundColor: isDarkMode ? '#0f172a' : '#ffffff',
       }}
     >
       <div className="container flex-grow-1 d-flex flex-column align-items-center justify-content-center py-5 mt-5">
         <div style={{ maxWidth: '400px', width: '100%' }}>
-          <div className="card shadow-lg border-0" style={{ borderRadius: '16px' }}>
+          <div className="card shadow-lg border-0" style={{ borderRadius: '16px', backgroundColor: 'var(--card-bg)', color: 'var(--text-main)' }}>
             <div
-              className="card-header bg-primary text-white text-center py-4 position-relative"
+              className="card-header text-white text-center py-4 position-relative"
               style={{ borderRadius: '16px 16px 0 0', background: 'linear-gradient(90deg, #4b6cb7 0%, #182848 100%)' }}
             >
               <Link
@@ -74,7 +74,7 @@ const Login = () => {
                 <FaArrowLeft />
               </Link>
               <h3 className="mb-0 fw-bold mt-2">Welcome Back</h3>
-              <p className="text-light mb-0 small">Login to your account</p>
+              <p className="mb-0 small" style={{ color: 'rgba(255,255,255,0.85)' }}>Login to your account</p>
             </div>
 
             <div className="card-body p-4">

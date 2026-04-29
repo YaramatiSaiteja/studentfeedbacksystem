@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -20,22 +20,10 @@ import { getCurrentUser, isAuthenticated } from './utils/auth';
 
 const AppLayout = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const showFooter = location.pathname === '/';
   const authenticated = isAuthenticated();
   const currentUser = getCurrentUser();
   const dashboardPath = currentUser?.role === 'admin' ? '/admin/dashboard' : '/student/dashboard';
-
-  useEffect(() => {
-    if (!authenticated) return;
-
-    const handlePopState = () => {
-      navigate(dashboardPath, { replace: true });
-    };
-
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [authenticated, dashboardPath, navigate]);
 
   return (
     <div className="d-flex flex-column min-vh-100">

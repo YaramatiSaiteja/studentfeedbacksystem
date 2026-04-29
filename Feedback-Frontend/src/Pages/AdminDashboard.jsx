@@ -328,7 +328,7 @@ const AdminDashboard = () => {
             {sidebarOpen && <div className="d-lg-none position-fixed top-0 start-0 w-100 h-100 bg-dark opacity-50" style={{ zIndex: 1040 }} onClick={() => setSidebarOpen(false)}></div>}
 
             {/* Sidebar */}
-            <div className={`sidebar bg-white border-end flex-column admin-fixed-sidebar ${sidebarOpen ? 'd-flex position-fixed' : 'd-none'} d-lg-flex`} style={{ width: '280px', height: '100vh', top: 0, left: 0, zIndex: 1050, transition: 'transform 0.3s ease', backgroundColor: 'var(--card-bg)' }}>
+            <div className={`sidebar bg-white border-end flex-column admin-fixed-sidebar ${sidebarOpen ? 'd-flex position-fixed' : 'd-none'} d-lg-flex`} style={{ width: '280px', height: '100vh', top: 0, left: 0, position: 'fixed', zIndex: 1050, transition: 'transform 0.3s ease', backgroundColor: 'var(--card-bg)' }}>
                 <div className="p-4 border-bottom d-none d-lg-block">
                     <div className="text-decoration-none text-dark d-flex align-items-center">
                         <h5 className="fw-bolder mb-0 text-primary d-flex align-items-center"><FaGraduationCap className="me-2 fs-3" /> FeedbackHub</h5>
@@ -351,6 +351,15 @@ const AdminDashboard = () => {
                         <li className="nav-item">
                             <NavLink to="/admin/students" className={({ isActive }) => `nav-link fw-medium d-flex align-items-center rounded px-3 py-2 transition-colors ${isActive ? 'active text-white bg-primary shadow-sm' : 'text-muted hover-text-dark sidebar-link-hover'}`} onClick={() => setSidebarOpen(false)}>
                                 <FaUsers className="me-3 fs-5" /> Students
+                            </NavLink>
+                        </li>
+                    </ul>
+
+                    <p className="text-muted small fw-bold text-uppercase mb-3 px-2">Forms</p>
+                    <ul className="nav flex-column gap-2 mb-4">
+                        <li className="nav-item">
+                            <NavLink to="/admin/courses" className={({ isActive }) => `nav-link fw-medium d-flex align-items-center rounded px-3 py-2 transition-colors ${isActive ? 'active text-white bg-primary shadow-sm' : 'text-muted hover-text-dark sidebar-link-hover'}`} onClick={() => setSidebarOpen(false)}>
+                                <FaBookOpen className="me-3 fs-5" /> Course Forms
                             </NavLink>
                         </li>
                     </ul>

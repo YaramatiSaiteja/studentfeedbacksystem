@@ -218,7 +218,7 @@ const Navbar = () => {
               <div className="sfh-brand-icon">
                 <FaGraduationCap size={17} color="#0a0a0a" />
               </div>
-              Student Feedback Hub
+              Feedback Hub
             </Link>
 
             {/* Mobile Toggle */}
@@ -260,7 +260,7 @@ const Navbar = () => {
                     <li className="sfh-nav-item dropdown d-flex align-items-center">
                       <div className="d-none d-sm-flex flex-column text-end me-2">
                         <span className="fw-bold" style={{ fontSize: '0.9rem', color: '#fff' }}>{user.fullName}</span>
-                        <small className="text-muted" style={{ fontSize: '0.78rem' }}>{user.role}</small>
+                        <small className="text-muted" style={{ fontSize: '0.78rem' }}>Feedback Hub</small>
                       </div>
                       <button
                         className="btn p-0 border-0 bg-transparent rounded-circle"
