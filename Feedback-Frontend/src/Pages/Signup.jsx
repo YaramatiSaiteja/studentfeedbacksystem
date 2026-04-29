@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { registerUser } from '../utils/api';
+import { useTheme } from '../context/ThemeContext';
 import { FaArrowLeft } from 'react-icons/fa';
 
 const Signup = () => {
@@ -11,6 +12,7 @@ const Signup = () => {
     const [department, setDepartment] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const { isDarkMode } = useTheme();
 
     const handleSignup = async (e) => {
         e.preventDefault();

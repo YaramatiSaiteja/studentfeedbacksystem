@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Captcha from '../components/Captcha';
 import { loginUser } from '../utils/api';
 import { saveAuthSession } from '../utils/auth';
+import { useTheme } from '../context/ThemeContext';
 import { FaArrowLeft } from 'react-icons/fa';
 
 const Login = () => {
@@ -11,6 +12,7 @@ const Login = () => {
   const [captchaValid, setCaptchaValid] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { isDarkMode } = useTheme();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -48,7 +50,13 @@ const Login = () => {
         background: isDarkMode
           ? 'radial-gradient(ellipse at top right, rgba(56,189,248,0.12) 0%, rgba(15,23,42,0) 60%), #0f172a'
           : 'radial-gradient(ellipse at top right, rgba(180,230,230,0.55) 0%, rgba(255,255,255,0) 60%), #ffffff',
-        backgroundImage: `
+        backgroundImage: isDarkMode
+          ? `
+          radial-gradient(ellipse at top right, rgba(56,189,248,0.12) 0%, rgba(15,23,42,0) 60%),
+          linear-gradient(rgba(56,189,248,0.06) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(56,189,248,0.06) 1px, transparent 1px)
+        `
+          : `
           radial-gradient(ellipse at top right, rgba(180,230,230,0.55) 0%, rgba(255,255,255,0) 60%),
           linear-gradient(rgba(100,200,210,0.12) 1px, transparent 1px),
           linear-gradient(90deg, rgba(100,200,210,0.12) 1px, transparent 1px)
